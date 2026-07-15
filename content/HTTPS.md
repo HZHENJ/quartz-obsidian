@@ -1,0 +1,1 @@
+简单理解就是HTTPS在[[HTTP]]上加入了[[SSLTLS|SSL/TLS]]，HTTPS通过HTTP进行传输，通过SSL/TLS进行加密和解密
