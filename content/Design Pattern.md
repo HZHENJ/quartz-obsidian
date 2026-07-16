@@ -1,0 +1,4 @@
+- [[Observer Pattern]]
+- [[Adapter Pattern]]
+- [[State Pattern]]
+- [[Lazy Initialization]]

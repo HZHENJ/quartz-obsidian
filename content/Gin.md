@@ -3,7 +3,7 @@
 - [[Gin Engine|Engine]]
 - [[Gin Context|Context]]
 - [[Gin Router|Router]]
-- [[Go Middleware|Middleware]]
+- [[Gin Middleware|Middleware]]
 # 参考
 - [Gin](https://github.com/gin-gonic/gin)
 - [极客兔兔 - Gee](https://geektutu.com/post/gee.html)
