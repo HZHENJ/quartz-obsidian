@@ -1,7 +1,12 @@
+Creational Pattern
+- [[Singleton Pattern]]
+
+Behavioral Pattern
 - [[Observer Pattern]]
-- [[Adapter Pattern]]
 - [[State Pattern]]
-- [[Lazy Initialization]]
+%% - [[Lazy Initialization]] %%
 
 Structural Pattern
+- [[Adapter Pattern]]
 - [[Decorator Pattern]]
+- [[Facade Pattern]]
