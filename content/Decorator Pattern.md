@@ -1,7 +1,5 @@
 %% [[Design Pattern]] %%
 Decorator Pattern（装饰器模式），是一种Structural Pattern（结构型设计模式），在不修改原对象的情况下，动态增强对象功能。
-
-UML：
 ```plantuml
 @startuml
 
@@ -37,7 +35,6 @@ ConcreteDecoratorB --|> Decorator
 
 @enduml
 ```
-
 
 设计要点：
 1. Component（抽象组件）
