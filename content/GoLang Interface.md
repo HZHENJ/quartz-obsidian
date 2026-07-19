@@ -1,6 +1,6 @@
 # 声明
 在Go中，interface和Java/C++中的interface有一个很大的区别：在Go中interface是“隐式实现（implicit implementation）“。在Java中，如果一个类想要实现某个接口，必须显示声明：
-```Java
+```Go
 class WechatAdapter implements Payment
 ```
 但在Go中，并不需要这样声明，Go会在编译阶段自动给检查某个类型是否实现了interface中所要求的全部方法，只要方法全部都实现了，那么这个类就自动满足（satisfy）这个interface。例如：有一个Payment的interface，其中有Pay方法，如下：
@@ -36,6 +36,7 @@ var p Payment
 p = &WechatAdapter{}
 ```
 Go 的 interface 更关注的是“行为（behavior）”而不是“类型继承关系”，也就是说Go 不关心这个类型是谁的子类，只关心这个类型有没有对应的方法，因此interface 本质上是一种“行为约束”。
+
 ---未完成---
 - 多接口
 - 接口作为参数
