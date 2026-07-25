@@ -1,5 +1,3 @@
-%% [[Gin]] %%
-%% [[Gin Engine]] %%
 ```Go
 type Context struct {
 	writermem responseWriter
@@ -85,3 +83,6 @@ mu sync.RWMutex // 保护 Keys map 的并发读写
 Params Params // c.Params，你平时用的 c.Param("id")
 params *Params // 指向底层数组，路由匹配时 root.getValue(..., c.params, ...) 直接往里写
 ```
+
+%% [[Gin]] %%
+%% [[Gin Engine]] %%
