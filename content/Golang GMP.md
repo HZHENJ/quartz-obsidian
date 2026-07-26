@@ -273,12 +273,36 @@ type gobuf struct {
 
 >_"Beyond indicating the general state of a G, the G status acts like a **lock on the goroutine's stack** (and hence its ability to execute user code)."_
 
+```mermaid
+stateDiagram-v2
+    [*] --> _Gidle : 刚分配
+    _Gidle --> _Gdead : 初始化完成
+    _Gdead --> _Grunnable : newproc1 创建
+    _Grunnable --> _Grunning : execute() 调度执行
+    _Grunning --> _Grunnable : 时间片耗尽/抢占
+    _Grunning --> _Gwaiting : gopark() 阻塞
+    _Grunning --> _Gsyscall : 进入系统调用
+    _Gwaiting --> _Grunnable : goready() 被唤醒
+    _Gsyscall --> _Grunnable : syscall 返回
+    _Grunning --> _Gdead : goexit() 退出
+```
+
+关键状态说明：
+- \_Gidle(0)：刚分配，尚未初始化
+- \_Grunnable(1)：在运行队列中，等待被调度
+- \_Grunning(2)：正在执行用户代码，持有 M 和 P
+- \_Gsyscall(3)：在执行系统调用
+- \_Gwaiting(4)：阻塞在 channel、锁等，等待被 `ready()`
+- \_Gdead(6)：已退出或刚从 free list 获取
+
 # 参考文章
 
 - [G-M-P调度机制](https://go.cyub.vip/gmp/)
 - [Golang的协程调度器原理及GMP设计思想](https://github.com/aceld/golang/blob/main/2%E3%80%81Golang%E7%9A%84%E5%8D%8F%E7%A8%8B%E8%B0%83%E5%BA%A6%E5%99%A8%E5%8E%9F%E7%90%86%E5%8F%8AGMP%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3%EF%BC%9F.md)
 - [Go源码](https://github.com/golang/go)
 - [详解Go语言调度循环源码实现](https://www.luozhiyun.com/archives/448)
+
+
 
 
 
