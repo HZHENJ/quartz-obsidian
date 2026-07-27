@@ -57,12 +57,12 @@ func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	
 	c := engine.pool.Get().(*Context)
 	c.writermem.reset(w)
-	c.Request = req
-	c.reset()
+	c.Request = req  // 将请求挂载到Context上
+	c.reset()  // 清空
 	
 	engine.handleHTTPRequest(c)
 	
-	engine.pool.Put(c)
+	engine.pool.Put(c)  // 将context放回对象池
 }
 ```
 
@@ -74,17 +74,29 @@ engine.routeTreesUpdated.Do(func() {
 })
 ```
 
-接下来从pool（[[Gin Context|Context]]对象池）中取一个复用的Context，因为在面对高并发的场景，如果用`new()`则每一次new都会进行一次堆内存空间的分配，导致GC频繁扫描，性能下降。而从对象池中复用Context，分配次数变少，GC压力极小，高性能。本质是**避免反复向runtime申请和归还堆内存，从而减少GC的负担。**
+接下来从pool（[[Gin Context|Context]]对象池）中取一个复用的Context，因为在面对高并发的场景，如果用`new()`则每一次new都会进行一次堆内存空间的分配，导致GC频繁扫描，性能下降。
 
-接下来，`c.writermem.reset(w)`请求回写通道，并且将请求挂载到Context中，`c.reset()`清空Context的内容并放回对象池。这里进行`c.reset()`并不会将req清空，所以不需要担心顺序问题，
-Context相关的具体内容在[[Gin Context]]中。
+而从对象池中复用Context，分配次数变少，GC压力极小，高性能。本质是**避免反复向runtime申请和归还堆内存，从而减少GC的负担。** 
+
+接下来，`c.writermem.reset(w)`请求回写通道，并且将请求挂载到Context中，`c.reset()`清空Context的内容并放回对象池。
+
+接下来看看reset方法相关的细节，这里进行`c.reset()`并不会将req清空，所以不需要担心顺序问题，Context相关的具体内容在[[Gin Context|Context]]中。看到这里可以先去看Context相关的内容，这样会更好理解。
 
 ```Go
-c := engine.pool.Get().(*Context)
-c.writermem.reset(w)
-c.Request = req // 将请求挂载到Context上
-c.reset() // 清空
-engine.handleHTTPRequest(c)
-engine.pool.Put(c) // 将context放回对象池
+func (c *Context) reset() {
+    c.Writer = &c.writermem
+    c.Params = c.Params[:0]       // 保留底层数组，只重置长度
+    c.handlers = nil
+    c.index = -1                   // 设置为 -1，Next() 会先 +1 再执行
+    c.fullPath = ""
+    c.Keys = nil
+    c.Errors = c.Errors[:0]
+    c.Accepted = nil
+    c.queryCache = nil
+    c.formCache = nil
+    c.sameSite = 0
+    *c.params = (*c.params)[:0]          // params 底层数组也复用
+    *c.skippedNodes = (*c.skippedNodes)[:0]
+}
 ```
 
